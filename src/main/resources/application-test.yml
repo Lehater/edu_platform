@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    # URL/логин/пароль задаются динамически Testcontainers через @DynamicPropertySource
+    url: jdbc:tc:postgresql:17-alpine:///testdb
+#    driver-class-name: org.postgresql.Driver
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: update    # для тестов норм, либо create-drop
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    defer-datasource-initialization: false
+
+
+  sql:
+    init:
+      mode: never
+
+logging:
+  level:
+    org.hibernate.SQL: warn
+    org.hibernate.orm.jdbc.bind: warn

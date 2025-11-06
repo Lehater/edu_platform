@@ -1,5 +1,20 @@
+server:
+  port: 8080
+
 spring:
   application.name: edu-platform
+  # (намеренно будем ловить LazyInitializationException)
+  # чтобы сознательно управлять ленивой загрузкой (и демонстрировать ошибки и их решения join fetch/@EntityGraph)
+  jpa:
+    open-in-view: false
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.time_zone: UTC
+
   datasource:
     url: jdbc:postgresql://localhost:15432/edu_db
     driver-class-name: org.postgresql.Driver
@@ -8,21 +23,17 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc.time_zone: UTC
   profiles:
     active: dev
 
-  # (намеренно будем ловить LazyInitializationException)
-  # чтобы сознательно управлять ленивой загрузкой (и демонстрировать ошибки и их решения join fetch/@EntityGraph)
-  jpa.open-in-view: false
 
 logging:
   level:
-    org.hibernate.SQL: debug
-    org.hibernate.orm.jdbc.bind: trace
+#    org.hibernate.SQL: debug
+#    org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.SQL: off
+    org.hibernate.orm.jdbc.bind: off
+#    org.springdoc: debug
+#    org.springdoc.webmvc.api: debug
+#    org.springframework.web: DEBUG
+#    com.example.edu_platform: TRACE

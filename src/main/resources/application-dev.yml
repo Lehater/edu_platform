@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:15432/edu_db}
+    username: ${DB_USER:edu_user}
+    password: ${DB_PASSWORD:edu_pass}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        highlight_sql: true
+        jdbc:
+          time_zone: UTC
+  sql:
+    init:
+      mode: always
+
+app:
+  demo:
+    enabled: true   # по умолчанию включено в dev; можно выключить через ENV APP_DEMO_ENABLED=false
+
+
+# подробное логирование в dev
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
+    org.springdoc: debug
+    org.springdoc.webmvc.api: debug
