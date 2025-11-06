@@ -1,0 +1,28 @@
+spring:
+  application.name: edu-platform
+  datasource:
+    url: jdbc:postgresql://localhost:15432/edu_db
+    driver-class-name: org.postgresql.Driver
+    username: edu_user
+    password: edu_pass
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.time_zone: UTC
+  profiles:
+    active: dev
+
+  # (намеренно будем ловить LazyInitializationException)
+  # чтобы сознательно управлять ленивой загрузкой (и демонстрировать ошибки и их решения join fetch/@EntityGraph)
+  jpa.open-in-view: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace

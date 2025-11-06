@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: edu_db
+      POSTGRES_USER: edu_user
+      POSTGRES_PASSWORD: edu_pass
+    ports: ["15432:5432"]
+    volumes: [ "pgdata:/var/lib/postgresql/data" ]
+volumes:
+  pgdata:
