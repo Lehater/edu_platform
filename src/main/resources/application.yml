@@ -13,7 +13,7 @@ spring:
         jdbc.time_zone: UTC
 
   datasource:
-    url: jdbc:postgresql://localhost:15432/edu_db
+    url: jdbc:postgresql://localhost:5432/edu_db
     driver-class-name: org.postgresql.Driver
     username: edu_user
     password: edu_pass

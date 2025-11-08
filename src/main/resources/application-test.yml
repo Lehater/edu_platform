@@ -1,19 +1,26 @@
 spring:
   datasource:
-    # URL/логин/пароль задаются динамически Testcontainers через @DynamicPropertySource
-    url: jdbc:tc:postgresql:17-alpine:///testdb
-#    driver-class-name: org.postgresql.Driver
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    # URL, username, password — НЕ задаём здесь!
+    # Они будут переопределены через @DynamicPropertySource
+    # url: jdbc:tc:postgresql:17-alpine:///testdb
+    # driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 0
+      max-lifetime: 20000      # 20s — меньше дефолта драйвера
+      idle-timeout: 10000      # 10s
+      validation-timeout: 3000
 
   jpa:
+    open-in-view: false
     hibernate:
-      ddl-auto: update    # для тестов норм, либо create-drop
+      ddl-auto: create-drop  # Лучше create-drop для тестов
     properties:
       hibernate:
         jdbc:
           time_zone: UTC
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     defer-datasource-initialization: false
-
 
   sql:
     init:
@@ -23,3 +30,5 @@ logging:
   level:
     org.hibernate.SQL: warn
     org.hibernate.orm.jdbc.bind: warn
+
+
