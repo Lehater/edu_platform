@@ -58,124 +58,135 @@ Course ──< CourseTag >── Tag
 ```mermaid
 erDiagram
 
+    %% ИМЕНА СУЩНОСТЕЙ ЛОГИЧЕСКИЕ; В БД используем snake_case во множественном числе через @Table
+    %% Ключевые уникальности и ограничения отмечены в комментариях
+
     USER {
-        int id PK
+        long id PK
         string name
-        string email
-        string role
+        string email  "UNIQUE"
+        string role   "ENUM: STUDENT|TEACHER|ADMIN"
     }
 
     PROFILE {
-        int id PK
-        int user_id FK
+        long id PK
+        long user_id FK "UNIQUE (1-1)"
         string bio
         string avatarUrl
     }
 
     CATEGORY {
-        int id PK
-        string name
+        long id PK
+        string name "UNIQUE"
     }
 
     COURSE {
-        int id PK
+        long id PK
         string title
         string description
-        int category_id FK
-        int teacher_id FK
+        long category_id FK
+        long teacher_id FK
         string duration
         date startDate
     }
 
     ENROLLMENT {
-        int id PK
-        int user_id FK
-        int course_id FK
+        long id PK
+        long user_id FK
+        long course_id FK
         date enrollDate
-        string status
+        string status "ENUM: ACTIVE|COMPLETED|DROPPED"
+        %% UNIQUE(user_id, course_id)
     }
 
     MODULE {
-        int id PK
-        int course_id FK
+        long id PK
+        long course_id FK
         string title
-        int orderIndex
+        int   orderIndex
         string description
+        %% UNIQUE(course_id, orderIndex)  -- последовательность модулей в курсе
     }
 
     LESSON {
-        int id PK
-        int module_id FK
+        long id PK
+        long module_id FK
         string title
         string content
         string videoUrl
+        %% UNIQUE(module_id, title)
     }
 
     ASSIGNMENT {
-        int id PK
-        int lesson_id FK
+        long id PK
+        long lesson_id FK
         string title
         string description
-        date dueDate
-        int maxScore
+        date   dueDate
+        int    maxScore
+        string status "ENUM: OPEN|CLOSED"
     }
 
     SUBMISSION {
-        int id PK
-        int assignment_id FK
-        int student_id FK
+        long id PK
+        long assignment_id FK
+        long student_id FK
         datetime submittedAt
         string content
-        int score
+        int score "NULLABLE до оценки"
         string feedback
+        %% UNIQUE(student_id, assignment_id)
     }
 
     QUIZ {
-        int id PK
-        int module_id FK
+        long id PK
+        long module_id FK "UNIQUE (1-1 optional)"
         string title
         int timeLimit
     }
 
     QUESTION {
-        int id PK
-        int quiz_id FK
+        long id PK
+        long quiz_id FK
         string text
-        string type
+        string type "ENUM: SINGLE_CHOICE|MULTIPLE_CHOICE"
     }
 
     ANSWEROPTION {
-        int id PK
-        int question_id FK
+        long id PK
+        long question_id FK
         string text
         boolean isCorrect
     }
 
     QUIZSUBMISSION {
-        int id PK
-        int quiz_id FK
-        int student_id FK
-        int score
+        long id PK
+        long quiz_id FK
+        long student_id FK
+        int score "NULLABLE до подсчёта"
         datetime takenAt
+        %% UNIQUE(student_id, quiz_id)  -- если разрешён только один проход
     }
 
     COURSEREVIEW {
-        int id PK
-        int course_id FK
-        int student_id FK
+        long id PK
+        long course_id FK
+        long student_id FK
         int rating
         string comment
         datetime createdAt
+        %% UNIQUE(student_id, course_id) -- один отзыв на курс от студента
     }
 
     TAG {
-        int id PK
-        string name
+        long id PK
+        string name "UNIQUE"
     }
 
     COURSE_TAG {
-        int course_id FK
-        int tag_id FK
+        long course_id FK
+        long tag_id FK
+        %% PK(course_id, tag_id)
     }
 
     %% === Relationships ===
@@ -197,14 +208,13 @@ erDiagram
     COURSE }o--|| CATEGORY : "belongs to"
     COURSE }o--|| USER : "taught by"
     COURSE }o--o{ TAG : "tagged as"
-    COURSE ||--o{ QUIZ : "may have"
 
     ENROLLMENT }o--|| USER : "for"
     ENROLLMENT }o--|| COURSE : "of"
 
     MODULE }o--|| COURSE : "belongs to"
     MODULE ||--o{ LESSON : "has"
-    MODULE ||--|| QUIZ : "has optional"
+    MODULE ||--|| QUIZ : "has optional (1-1)"
 
     LESSON }o--|| MODULE : "belongs to"
     LESSON ||--o{ ASSIGNMENT : "includes"
@@ -381,7 +391,7 @@ GitHub Actions выполняет:
 
 ## Быстрый сценарий проверки
 
-1. Запустить проект: `docker compose up -d`
+1. Запустить проект: `docker compose up -d --build`
 2. Открыть Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 3. Выполнить по порядку:
 
