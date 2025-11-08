@@ -1,15 +1,12 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:15432/edu_db}
-    username: ${DB_USER:edu_user}
-    password: ${DB_PASSWORD:edu_pass}
+    url: ${DB_URL:jdbc:postgresql://localhost:15432/edu}
+    username: ${DB_USER:edu}
+    password: ${DB_PASSWORD:edu}
   jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        highlight_sql: true
-        jdbc:
-          time_zone: UTC
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
   sql:
     init:
       mode: always
@@ -17,7 +14,6 @@ spring:
 app:
   demo:
     enabled: true   # по умолчанию включено в dev; можно выключить через ENV APP_DEMO_ENABLED=false
-
 
 # подробное логирование в dev
 logging:

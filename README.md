@@ -9,9 +9,9 @@
 | Категория        | Технологии                                                           |
 |------------------|----------------------------------------------------------------------|
 | Backend          | **Java 17**, **Spring Boot 3.3**, **Spring Data JPA**, **Hibernate** |
-| База данных      | **PostgreSQL 16**, **H2 (тесты)**                                    |
+| База данных      | **PostgreSQL 17**, **H2 (тесты)**                                    |
 | ORM              | **JPA/Hibernate** (FetchType.LAZY/EAGER, @EntityGraph, join fetch)   |
-| Тестирование     | **JUnit 5**, **Spring Boot Test**, **Testcontainers**, **JaCoCo**    |
+| Тестирование     | **JUnit 5**, **Spring Boot Test**, **Testcontainers**                |
 | Документация API | **springdoc-openapi** (Swagger UI)                                   |
 | Сборка           | **Maven 3.9**                                                        |
 | Контейнеризация  | **Dockerfile**, **Docker Compose**, **GitHub Actions (CI/CD)**       |

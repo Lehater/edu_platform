@@ -30,12 +30,12 @@ public class CourseService {
     @Transactional
     public Long createCourse(CreateCourseCmd cmd) {
         User teacher = userRepository.findById(cmd.teacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + cmd.teacherId()));
+                .orElseThrow(() -> new DomainNotFoundException("User not found (teacher): " + cmd.teacherId()));
 
         Category category = null;
         if (cmd.categoryId() != null) {
             category = categoryRepository.findById(cmd.categoryId())
-                    .orElseThrow(() -> new EntityNotFoundException("Category not found: " + cmd.categoryId()));
+                    .orElseThrow(() -> new DomainNotFoundException("Category not found: " + cmd.categoryId()));
         }
 
         Course course = Course.builder()
@@ -49,11 +49,11 @@ public class CourseService {
 
         if (cmd.tagIds() != null && !cmd.tagIds().isEmpty()) {
             var tags = new LinkedHashSet<Tag>(tagRepository.findAllById(cmd.tagIds()));
-            // (опционально) проверить, что все id найдены:
+
             if (tags.size() != cmd.tagIds().size()) {
                 throw new EntityNotFoundException("Some tags not found");
             }
-            course.setTags(tags);           // <- вместо course.getTags().add(...)
+            course.setTags(tags);
         }
 
         return courseRepository.save(course).getId();

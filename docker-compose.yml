@@ -3,22 +3,24 @@ services:
     image: postgres:17-alpine
     container_name: edu-postgres
     environment:
-      POSTGRES_DB: edu_db
-      POSTGRES_USER: edu_user
-      POSTGRES_PASSWORD: edu_pass
-    ports: [ "15432:5432" ]
-    volumes: [ "pgdata:/var/lib/postgresql/data" ]
+      POSTGRES_DB: edu
+      POSTGRES_USER: edu
+      POSTGRES_PASSWORD: edu
+    ports:
+      - "15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 20
 
   app:
-    image: ghcr.io/${GITHUB_REPOSITORY,,}:latest # локально переопредели build контекстом ниже
     build:
       context: .
       dockerfile: Dockerfile
+    image: edu-platform-dev:latest
     environment:
       SPRING_PROFILES_ACTIVE: dev
       DB_URL: jdbc:postgresql://postgres:5432/edu
@@ -29,7 +31,7 @@ services:
         condition: service_healthy
     ports:
       - "8080:8080"
-
+    # ВАЖНО: здесь НЕ должно быть volumes
 
 volumes:
   pgdata:
